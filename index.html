@@ -1,0 +1,192 @@
+<!DOCTYPE html>
+
+<html lang="ko">
+<head>
+<meta charset="utf-8"/>
+<meta content="width=device-width,initial-scale=1" name="viewport"/>
+<title>
+   제36회 파이컵 — 랜덤 파트너 배틀
+  </title>
+<link href="style.css" rel="stylesheet"/>
+</head>
+<body>
+<div class="app">
+<header class="top">
+<!-- 제목과 설명 문구는 바로 아래 영역에서 수정할 수 있습니다. -->
+<div class="brand">
+<img alt="YPL 로고" src="assets/ypl-logo.png"/>
+<div>
+<h1>
+       제36회 파이컵 — 랜덤 파트너 배틀
+      </h1>
+<p>
+       YPL · Pokémon Center Yonsei
+      </p>
+</div>
+</div>
+<div class="stats">
+<div class="pill">
+      참가자
+      <b id="pc">
+       0
+      </b>
+      명
+     </div>
+<div aria-label="남은 메가 포켓몬 보기" class="pill pool-pill" data-pool-type="mega" role="button" tabindex="0" title="남은 메가 포켓몬 보기">
+      남은 메가
+      <b id="mc">
+       73
+      </b>
+</div>
+<div aria-label="남은 일반 포켓몬 보기" class="pill pool-pill" data-pool-type="normal" role="button" tabindex="0" title="남은 일반 포켓몬 보기">
+      남은 일반
+      <b id="nc">
+       135
+      </b>
+</div>
+</div>
+</header>
+<main class="layout">
+<aside class="panel">
+<div class="eyebrow">
+      YPL DRAW CONTROL
+     </div>
+<h2>
+      운영 패널
+     </h2>
+<label>
+      참가자 명단 — 한 줄에 한 명
+     </label>
+<textarea id="input" placeholder="참가자1
+참가자2
+참가자3"></textarea>
+<div class="controls">
+<button class="btn primary" id="apply">
+       참가자 적용
+      </button>
+<button class="btn accent" disabled="" id="draw">
+       현재 참가자 추첨
+      </button>
+<button class="btn" disabled="" id="next">
+       다음 참가자
+      </button>
+<div class="row">
+<button class="btn ok" disabled="" id="reroll">선택 카드 리롤</button>
+<button class="btn" disabled="" id="undo">
+        마지막 작업 되돌리기
+       </button>
+</div>
+<div class="row">
+<button class="btn" id="export">
+        결과 내보내기
+       </button>
+<button class="btn danger" id="reset">
+        전체 초기화
+       </button>
+</div>
+</div>
+<div class="plist" id="plist">
+</div>
+</aside>
+<section>
+<div class="hero" id="hero">
+<div class="hero-content">
+<img alt="YPL 로고" class="hero-logo" src="assets/ypl-logo.png"/>
+<small>
+        RANDOM PARTNER DRAW
+       </small>
+<h2 id="pname">
+        참가자를 등록하세요
+       </h2>
+<p id="msg">
+        YPL 랜덤 파트너 추첨 시스템
+       </p>
+</div>
+</div>
+<div class="empty" id="cards">
+      추첨 결과가 여기에 표시됩니다.
+     </div>
+<div class="actions">
+<button class="btn" id="full">
+       전체화면
+      </button>
+</div>
+<div class="log" id="log">
+</div>
+</section>
+</main>
+</div>
+<div aria-hidden="true" class="pool-modal" id="poolModal">
+<div aria-labelledby="poolTitle" aria-modal="true" class="pool-dialog" role="dialog">
+<button aria-label="닫기" class="pool-close" id="poolClose" type="button">×</button>
+<div class="pool-header">
+<div>
+<div class="eyebrow">REROLL DECISION PANEL</div>
+<h3 id="poolTitle">남은 포켓몬과 현재 파티</h3>
+<p id="poolSubtitle">현재 참가자의 파티와 남은 풀을 함께 확인합니다.</p>
+</div>
+<div class="reroll-count" id="poolRerollCount">리롤 0/2</div>
+</div>
+<div class="decision-layout">
+<section class="party-section">
+<div class="section-heading">
+<div>
+<h4>현재 참가자 파티</h4>
+<p id="partyHelp">리롤할 포켓몬을 선택하세요.</p>
+</div>
+</div>
+<div class="decision-party" id="decisionParty"></div>
+<div class="selected-summary" id="selectedSummary">
+          아직 리롤 대상이 선택되지 않았습니다.
+        </div>
+<button class="btn danger decision-reroll" disabled="" id="decisionReroll" type="button">
+          선택 포켓몬 리롤
+        </button>
+</section>
+<section class="pool-section">
+<div aria-label="남은 포켓몬 풀" class="pool-tabs" role="tablist">
+<button class="pool-tab active" data-pool-type="mega" id="poolMegaTab" type="button">
+            남은 메가 <b id="poolMegaCount">0</b>
+</button>
+<button class="pool-tab" data-pool-type="normal" id="poolNormalTab" type="button">
+            남은 일반 <b id="poolNormalCount">0</b>
+</button>
+</div>
+<div class="pool-tools">
+<input autocomplete="off" id="poolSearch" placeholder="포켓몬 이름 검색" type="search"/>
+<div class="pool-probability" id="poolProbability"></div>
+</div>
+<div class="remaining-grid" id="remainingGrid"></div>
+<div class="pool-empty" hidden="" id="poolEmpty">조건에 맞는 포켓몬이 없습니다.</div>
+</section>
+</div>
+<p class="pool-note">
+      남은 목록은 리롤 판단을 위한 참고용입니다. 목록의 포켓몬을 직접 선택할 수 없으며,
+      리롤 결과는 해당 남은 풀에서 무작위로 결정됩니다.
+    </p>
+</div>
+</div><div class="modal" id="modal">
+<div class="mbox">
+<h3 id="mtitle">
+     확인
+    </h3>
+<p id="mtext">
+</p>
+<div class="mactions">
+<button class="btn" id="cancel">
+      취소
+     </button>
+<button class="btn danger" id="confirm">
+      확인
+     </button>
+</div>
+</div>
+</div>
+<script src="config.js">
+</script>
+<script src="pokemon-images.js">
+</script>
+<script src="app.js">
+</script>
+</body>
+</html>
